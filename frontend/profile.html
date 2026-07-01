@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile — BillWise AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .profile-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .profile-header {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+      margin-bottom: 40px;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .profile-avatar-section {
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #a78bfa, #9333ea);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .btn-edit-avatar {
+      background: rgba(167, 139, 250, 0.3);
+      border: 1px solid rgba(167, 139, 250, 0.6);
+      color: #a78bfa;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-edit-avatar:hover {
+      background: rgba(167, 139, 250, 0.5);
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 32px;
+      font-weight: 800;
+      color: #f3f4f6;
+      margin-bottom: 8px;
+    }
+
+    .profile-email {
+      color: #9ca3af;
+      margin-bottom: 15px;
+    }
+
+    .profile-meta {
+      display: flex;
+      gap: 30px;
+      font-size: 14px;
+    }
+
+    .profile-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #d1d5db;
+    }
+
+    .profile-meta-icon {
+      color: #a78bfa;
+      font-size: 16px;
+    }
+
+    .profile-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn-profile {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .btn-primary-profile {
+      background: linear-gradient(135deg, #a78bfa, #9333ea);
+      color: white;
+    }
+
+    .btn-primary-profile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(147, 112, 219, 0.3);
+    }
+
+    .btn-secondary-profile {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      color: #d1d5db;
+    }
+
+    .btn-secondary-profile:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(167, 139, 250, 0.6);
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card-profile {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 16px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card-profile:hover {
+      transform: translateY(-8px);
+      border-color: rgba(167, 139, 250, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-icon-profile {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .stat-icon-profile.bills { color: #a78bfa; }
+    .stat-icon-profile.amount { color: #06b6d4; }
+    .stat-icon-profile.category { color: #10b981; }
+    .stat-icon-profile.average { color: #f59e0b; }
+
+    .stat-value-profile {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a78bfa, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .stat-label-profile {
+      font-size: 14px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .achievements-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title-profile {
+      font-size: 24px;
+      font-weight: 700;
+      color: #f3f4f6;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .achievement-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .achievement-card:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(167, 139, 250, 0.5);
+    }
+
+    .achievement-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .achievement-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f3f4f6;
+      margin-bottom: 5px;
+    }
+
+    .achievement-status {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .achievement-card.locked .achievement-icon {
+      opacity: 0.3;
+    }
+
+    .achievement-card.locked .achievement-name,
+    .achievement-card.locked .achievement-status {
+      opacity: 0.5;
+    }
+
+    .activity-section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 15px;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(167, 139, 250, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a78bfa;
+      flex-shrink: 0;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-title {
+      color: #f3f4f6;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .activity-time {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .activity-value {
+      font-weight: 700;
+      color: #a78bfa;
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .profile-meta {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .profile-buttons {
+        justify-content: center;
+      }
+
+      .profile-name {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="profile.html" class="nav-link active">Profile</a>
+      <a href="settings.html" class="nav-link">Settings</a>
+      <a href="#" id="authActionLink" class="nav-link">Logout</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="profile-container">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar-section">
+          <div class="profile-avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <button class="btn-edit-avatar">
+            <i class="fa-solid fa-camera"></i> Edit Photo
+          </button>
+        </div>
+
+        <div class="profile-info">
+          <h1 class="profile-name">John Doe</h1>
+          <p class="profile-email">john.doe@example.com</p>
+          
+          <div class="profile-meta">
+            <div class="profile-meta-item">
+              <span class="profile-meta-icon"><i class="fa-solid fa-calendar"></i></span>
+              <span>Joined 6 months ago</span>
+            </div>
+            <div class="profile-meta-item">
+              <span class="profile-meta-icon"><i class="fa-solid fa-check-circle"></i></span>
+              <span>Verified User</span>
+            </div>
+            <div class="profile-meta-item">
+              <span class="profile-meta-icon"><i class="fa-solid fa-star"></i></span>
+              <span>Pro Member</span>
+            </div>
+          </div>
+
+          <div class="profile-buttons">
+            <button class="btn-profile btn-primary-profile" onclick="editProfile()">
+              <i class="fa-solid fa-edit"></i> Edit Profile
+            </button>
+            <button class="btn-profile btn-secondary-profile" onclick="downloadData()">
+              <i class="fa-solid fa-download"></i> Download Data
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Stats -->
+      <div class="profile-stats">
+        <div class="stat-card-profile">
+          <div class="stat-icon-profile bills">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <div class="stat-value-profile" data-target="248">0</div>
+          <div class="stat-label-profile">Total Bills</div>
+        </div>
+
+        <div class="stat-card-profile">
+          <div class="stat-icon-profile amount">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+          </div>
+          <div class="stat-value-profile">₹58,240</div>
+          <div class="stat-label-profile">Total Spent</div>
+        </div>
+
+        <div class="stat-card-profile">
+          <div class="stat-icon-profile category">
+            <i class="fa-solid fa-tag"></i>
+          </div>
+          <div class="stat-value-profile">7</div>
+          <div class="stat-label-profile">Categories</div>
+        </div>
+
+        <div class="stat-card-profile">
+          <div class="stat-icon-profile average">
+            <i class="fa-solid fa-calculator"></i>
+          </div>
+          <div class="stat-value-profile">₹235</div>
+          <div class="stat-label-profile">Average Bill</div>
+        </div>
+      </div>
+
+      <!-- Achievements Section -->
+      <div class="achievements-section">
+        <h2 class="section-title-profile">
+          <i class="fa-solid fa-trophy"></i> Achievements
+        </h2>
+        <div class="achievements-grid">
+          <div class="achievement-card">
+            <div class="achievement-icon">⭐</div>
+            <div class="achievement-name">First Bill</div>
+            <div class="achievement-status">✓ Unlocked</div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon">🎯</div>
+            <div class="achievement-name">100 Bills</div>
+            <div class="achievement-status">✓ Unlocked</div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon">💰</div>
+            <div class="achievement-name">Budget Master</div>
+            <div class="achievement-status">✓ Unlocked</div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon">📈</div>
+            <div class="achievement-name">Saving Expert</div>
+            <div class="achievement-status">75% progress</div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon">🧠</div>
+            <div class="achievement-name">OCR Explorer</div>
+            <div class="achievement-status">Locked</div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon">🏆</div>
+            <div class="achievement-name">Pro User</div>
+            <div class="achievement-status">Locked</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="activity-section" style="margin-top: 40px;">
+        <h2 class="section-title-profile">
+          <i class="fa-solid fa-history"></i> Recent Activity
+        </h2>
+
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">Bill Scanned</div>
+            <div class="activity-time">
+              <span class="activity-value">DMART - Groceries</span> • 2 hours ago
+            </div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fa-solid fa-unlock"></i>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">Achievement Unlocked</div>
+            <div class="activity-time">
+              <span class="activity-value">Budget Master</span> • 5 hours ago
+            </div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fa-solid fa-bell"></i>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">Budget Alert</div>
+            <div class="activity-time">
+              <span class="activity-value">Food spending at 85%</span> • 1 day ago
+            </div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">Monthly Report Generated</div>
+            <div class="activity-time">
+              <span class="activity-value">June 2026 Report</span> • 3 days ago
+            </div>
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fa-solid fa-duplicate"></i>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">Duplicate Bill Detected</div>
+            <div class="activity-time">
+              <span class="activity-value">Amazon - ₹1,200</span> • 1 week ago
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Animate stat counters
+    function animateCounter(element) {
+      const target = parseInt(element.getAttribute('data-target'));
+      const duration = 2000;
+      const increment = target / (duration / 16);
+      let current = 0;
+
+      const counter = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(counter);
+        }
+        element.textContent = Math.floor(current);
+      }, 16);
+    }
+
+    // Observe when stat cards come into view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const statValue = entry.target.querySelector('[data-target]');
+          if (statValue && !statValue.classList.contains('animated')) {
+            animateCounter(statValue);
+            statValue.classList.add('animated');
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('.stat-card-profile').forEach(card => observer.observe(card));
+
+    function editProfile() {
+      alert('Edit profile functionality would open a modal form');
+    }
+
+    function downloadData() {
+      alert('Downloading your data as JSON file...');
+      // In a real app, this would trigger a file download
+    }
+  </script>
+</body>
+</html>

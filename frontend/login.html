@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — BillWise AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="login.html" class="nav-link active">Login</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="hero" style="padding-top: 48px; padding-bottom: 48px;">
+      <div class="hero-content" style="max-width: 700px; margin: 0 auto; text-align: center;">
+        <div class="hero-badge">
+          <i class="fa-solid fa-user-lock"></i> Secure access
+        </div>
+        <h1 class="hero-headline">Login to BillWise AI</h1>
+        <p class="hero-sub">Sign in to access your bill scanner, dashboard and history.</p>
+      </div>
+
+      <div class="card" style="max-width: 520px; margin: 32px auto 0; padding: 32px;">
+        <h2 class="card-title">Welcome back</h2>
+
+        <form id="loginForm" class="auth-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" class="input-field" placeholder="Enter your username" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" class="input-field" placeholder="Enter your password" required />
+          </div>
+
+          <div id="loginMessage" class="form-note" style="margin-bottom: 16px; color: var(--text-muted);"></div>
+
+          <button type="submit" class="btn-primary btn-full">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Sign in
+          </button>
+        </form>
+
+        <p style="margin-top:24px; text-align:center; color:var(--text-secondary);">
+          New here?
+          <a href="signup.html" style="color:var(--color-primary); font-weight:600;">Create an account</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API_URL = 'http://127.0.0.1:5000';
+    const loginForm = document.getElementById('loginForm');
+    const loginMessage = document.getElementById('loginMessage');
+
+    loginForm?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const username = document.getElementById('username')?.value.trim();
+      const password = document.getElementById('password')?.value.trim();
+
+      if (!username || !password) {
+        loginMessage.textContent = 'Please enter username and password.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          loginMessage.style.color = 'var(--red)';
+          loginMessage.textContent = data.error || 'Login failed.';
+          return;
+        }
+
+        loginMessage.style.color = 'var(--text-secondary)';
+        loginMessage.textContent = 'Login successful. Redirecting...';
+        window.location.href = 'index.html';
+      } catch (error) {
+        loginMessage.style.color = 'var(--red)';
+        loginMessage.textContent = error.message || 'Unable to login.';
+      }
+    });
+  </script>
+</body>
+</html>

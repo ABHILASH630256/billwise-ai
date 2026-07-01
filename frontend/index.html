@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BillWise AI — Smart Bill Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="upload.html" class="nav-link">Upload Bill</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="history.html" class="nav-link">History</a>
+      <a href="#" id="authActionLink" class="nav-link">Logout</a>
+    </div>
+    <a href="upload.html" class="btn-nav-cta">
+      <i class="fa-solid fa-plus"></i> Scan Bill
+    </a>
+    <button class="nav-hamburger" id="hamburger">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fa-solid fa-bolt"></i> AI-Powered Expense Intelligence
+      </div>
+      <h1 class="hero-headline">
+        Stop guessing<br/>
+        <span class="gradient-text">where your money goes</span>
+      </h1>
+      <p class="hero-sub">
+        Upload any bill. BillWise AI extracts the shop name, date, and amount instantly — then predicts the expense category using machine learning. No manual entry. Ever.
+      </p>
+      <div class="hero-actions">
+        <a href="upload.html" class="btn-primary">
+          <i class="fa-solid fa-camera"></i> Scan Your First Bill
+        </a>
+        <a href="dashboard.html" class="btn-ghost">
+          <i class="fa-solid fa-chart-pie"></i> View Dashboard
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-pill"><span class="stat-num">6</span> Categories</div>
+        <div class="stat-pill"><span class="stat-num">OCR</span> Powered</div>
+        <div class="stat-pill"><span class="stat-num">ML</span> Predictions</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="card" id="homeFeatureCard" style="border-radius:28px;">
+        <h3 class="card-title" style="margin-bottom:12px;"><i class="fa-solid fa-bolt"></i> Quick Actions</h3>
+        <p style="color:var(--text-secondary);margin-bottom:16px;">Jump straight into useful tools: search your bills, apply category filters, or remove unwanted entries quickly.</p>
+
+        <div class="hero-feature-grid">
+          <button class="hero-feature-item" data-action="live-search" id="homeLiveSearch">
+            <i class="fa-solid fa-search"></i>
+            <div>
+              <strong>Live search</strong>
+              <div class="hf-sub">Instantly search your bill history</div>
+            </div>
+          </button>
+
+          <button class="hero-feature-item" data-action="category-filters" id="homeCategoryFilters">
+            <i class="fa-solid fa-filter"></i>
+            <div>
+              <strong>Category filters</strong>
+              <div class="hf-sub">Quickly narrow by expense type</div>
+            </div>
+          </button>
+
+          <button class="hero-feature-item" data-action="quick-delete" id="homeQuickDelete">
+            <i class="fa-solid fa-trash"></i>
+            <div>
+              <strong>Quick delete</strong>
+              <div class="hf-sub">Go to history and remove bills with one click</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <h2 class="section-title">Everything you need to track expenses</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="background:rgba(99,102,241,0.12)">
+          <i class="fa-solid fa-eye" style="color:#6366f1"></i>
+        </div>
+        <h3>OCR Text Extraction</h3>
+        <p>Powered by Tesseract OCR — reads printed bills, receipts, and invoices with high accuracy.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="background:rgba(16,185,129,0.12)">
+          <i class="fa-solid fa-brain" style="color:#10b981"></i>
+        </div>
+        <h3>ML Category Prediction</h3>
+        <p>Multinomial Naive Bayes trained on 50+ bill samples classifies expenses into 6 smart categories.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="background:rgba(245,158,11,0.12)">
+          <i class="fa-solid fa-chart-bar" style="color:#f59e0b"></i>
+        </div>
+        <h3>Spending Dashboard</h3>
+        <p>Pie charts, bar graphs, and monthly trends — all live from your scanned bill history.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="background:rgba(239,68,68,0.12)">
+          <i class="fa-solid fa-database" style="color:#ef4444"></i>
+        </div>
+        <h3>MySQL Storage</h3>
+        <p>Every bill is saved with shop name, amount, category, extracted text, and timestamp.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="categories-section">
+    <h2 class="section-title">6 smart expense categories</h2>
+    <div class="cat-pills-row">
+      <div class="cat-pill-big groceries"><i class="fa-solid fa-cart-shopping"></i> Groceries</div>
+      <div class="cat-pill-big food"><i class="fa-solid fa-utensils"></i> Food</div>
+      <div class="cat-pill-big travel"><i class="fa-solid fa-plane"></i> Travel</div>
+      <div class="cat-pill-big medical"><i class="fa-solid fa-heart-pulse"></i> Medical</div>
+      <div class="cat-pill-big education"><i class="fa-solid fa-book"></i> Education</div>
+      <div class="cat-pill-big other"><i class="fa-solid fa-box"></i> Other</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <i class="fa-solid fa-receipt"></i> BillWise<span class="accent">AI</span>
+      </div>
+      <p class="footer-sub">Built with Flask · MySQL · Tesseract OCR · scikit-learn</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

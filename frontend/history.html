@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bill History — BillWise AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="dashboard-body">
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="upload.html" class="nav-link">Upload Bill</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="history.html" class="nav-link active">History</a>
+      <a href="#" id="authActionLink" class="nav-link">Logout</a>
+    </div>
+    <a href="upload.html" class="btn-nav-cta"><i class="fa-solid fa-plus"></i> Scan Bill</a>
+    <button class="nav-hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></button>
+  </nav>
+
+  <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Bill History</h1>
+        <p class="page-sub">All your scanned bills in one place.</p>
+      </div>
+
+      <section class="card history-hero-card">
+        <div>
+          <span class="hero-label">Recent activity</span>
+          <h2>Search, filter, and manage your saved bills with one click.</h2>
+        </div>
+        <div class="hero-pill-row">
+          <span class="info-pill">Live search</span>
+          <span class="info-pill">Category filters</span>
+          <span class="info-pill">Quick delete</span>
+        </div>
+      </section>
+
+      <!-- FILTERS -->
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by shop name..."/>
+        </div>
+        <select id="catFilter" class="filter-select">
+          <option value="">All Categories</option>
+          <option value="Groceries">Groceries</option>
+          <option value="Food">Food</option>
+          <option value="Travel">Travel</option>
+          <option value="Medical">Medical</option>
+          <option value="Education">Education</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- HISTORY GRID -->
+      <div class="history-grid" id="historyGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="empty-state" id="emptyState" style="display:none">
+        <i class="fa-solid fa-receipt empty-icon"></i>
+        <h3>No bills found</h3>
+        <p>Try adjusting your search or <a href="upload.html">upload a new bill</a>.</p>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="script.js"></script>
+</body>
+</html>

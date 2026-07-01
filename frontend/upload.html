@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Bill — BillWise AI</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="dashboard-body">
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="upload.html" class="nav-link active">Upload Bill</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="history.html" class="nav-link">History</a>
+      <a href="#" id="authActionLink" class="nav-link">Logout</a>
+    </div>
+
+    <a href="upload.html" class="btn-nav-cta">
+      <i class="fa-solid fa-plus"></i> Scan Bill
+    </a>
+
+    <button type="button" class="nav-hamburger" id="hamburger">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </nav>
+
+  <main class="main-content">
+
+      <div class="page-header">
+        <h1 class="page-title">Scan a Bill</h1>
+        <p class="page-sub">
+          Upload an image of any receipt or invoice to extract and categorize it automatically.
+        </p>
+      </div>
+
+      <div class="upload-grid">
+
+        <section class="card upload-card">
+
+          <h2 class="card-title">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            Upload Bill Image
+          </h2>
+
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/png,image/jpeg,image/jpg"
+            style="display: none;"
+          />
+
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-icon">
+              <i class="fa-solid fa-image"></i>
+            </div>
+
+            <p class="drop-main">Drag & drop your bill here</p>
+            <p class="drop-sub">or click to browse — JPG and PNG supported</p>
+
+            <button
+              type="button"
+              class="btn-choose"
+              id="chooseFileBtn"
+            >
+              <i class="fa-solid fa-folder-open"></i>
+              Choose File
+            </button>
+          </div>
+
+          <div class="preview-wrap" id="previewWrap" style="display:none;">
+            <div class="preview-box">
+              <img
+                id="previewImg"
+                src=""
+                alt="Selected bill preview"
+                class="preview-img"
+              />
+
+              <button
+                type="button"
+                class="btn-remove-img"
+                id="removeImg"
+              >
+                <i class="fa-solid fa-times"></i>
+                Remove
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="btn-primary btn-full"
+            id="scanBtn"
+            disabled
+          >
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Scan &amp; Analyze Bill
+          </button>
+
+        </section>
+
+        <section class="card results-card" id="resultsCard">
+
+          <div class="results-header">
+            <h2 class="card-title">
+              <i class="fa-solid fa-brain"></i>
+              Smart Scan Insights
+            </h2>
+            <span class="badge-pill">New Feature</span>
+          </div>
+
+          <div class="result-idle" id="resultIdle">
+            <div class="idle-copy">
+              <h3>Ready when you are</h3>
+              <p>Upload any receipt or invoice, then scan to unlock the AI summary, category prediction and save-to-history flow.</p>
+            </div>
+
+            <div class="feature-pill-row">
+              <span class="info-pill">Instant OCR</span>
+              <span class="info-pill">Category prediction</span>
+              <span class="info-pill">Auto-save ready</span>
+            </div>
+          </div>
+
+          <div class="result-loading" id="resultLoading" style="display:none;">
+            <div class="spinner"></div>
+            <p>Analyzing your receipt...</p>
+          </div>
+
+          <div id="resultFields" style="display:none;">
+
+            <div class="result-field">
+              <label>Shop / Vendor</label>
+              <div class="result-value" id="resShop">—</div>
+            </div>
+
+            <div class="result-field">
+              <label>Purchase Date</label>
+              <div class="result-value" id="resDate">—</div>
+            </div>
+
+            <div class="result-field">
+              <label>Total Amount</label>
+              <div class="result-value accent-val" id="resAmount">—</div>
+            </div>
+
+            <div class="result-field">
+              <label>Predicted Category</label>
+              <div id="resCategoryWrap"></div>
+            </div>
+
+            <div class="result-field">
+              <label>Confidence</label>
+
+              <div class="confidence-bar-wrap">
+                <div class="confidence-bar" id="confBar"></div>
+              </div>
+
+              <span class="conf-pct" id="confPct">0%</span>
+            </div>
+
+            <div class="result-field">
+              <label>Amount (manual correction)</label>
+
+              <input
+                type="number"
+                class="input-field"
+                id="manualAmount"
+                placeholder="Enter amount if OCR did not detect it"
+                min="0"
+                step="0.01"
+              />
+            </div>
+
+            <button
+              type="button"
+              class="btn-primary btn-full"
+              id="saveBtn"
+            >
+              <i class="fa-solid fa-floppy-disk"></i>
+              Save Bill
+            </button>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Only one JavaScript file -->
+ <script src="script.js?v=5000"></script>
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recurring Bills — BillWise AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .recurring-container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+    .recurring-header { margin-bottom: 40px; }
+    .recurring-title { font-size: 32px; font-weight: 800; color: #f3f4f6; margin-bottom: 20px; }
+    .recurring-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+    .stat-box { background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 10px; padding: 15px; text-align: center; }
+    .stat-number { font-size: 24px; font-weight: 800; color: #a78bfa; }
+    .stat-label { font-size: 12px; color: #9ca3af; margin-top: 5px; text-transform: uppercase; }
+    
+    .recurring-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    
+    .recurring-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 16px;
+      padding: 25px;
+      transition: all 0.3s ease;
+    }
+    
+    .recurring-card:hover { transform: translateY(-4px); border-color: rgba(167, 139, 250, 0.5); background: rgba(255, 255, 255, 0.08); }
+    
+    .recurring-header-card { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+    .recurring-icon { width: 50px; height: 50px; background: rgba(167, 139, 250, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .recurring-name { font-weight: 700; color: #f3f4f6; font-size: 16px; }
+    
+    .recurring-details { font-size: 14px; color: #9ca3af; margin-bottom: 15px; }
+    .recurring-detail { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .recurring-detail i { color: #a78bfa; }
+    
+    .recurring-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid rgba(167, 139, 250, 0.1); }
+    .recurring-amount { font-size: 18px; font-weight: 800; color: #a78bfa; }
+    .recurring-actions { display: flex; gap: 8px; }
+    .recurring-btn { padding: 8px 12px; background: rgba(167, 139, 250, 0.2); border: 1px solid rgba(167, 139, 250, 0.4); border-radius: 6px; color: #a78bfa; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s ease; }
+    .recurring-btn:hover { background: rgba(167, 139, 250, 0.4); }
+
+    @media (max-width: 768px) {
+      .recurring-grid { grid-template-columns: 1fr; }
+      .recurring-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="recurring.html" class="nav-link active">Recurring Bills</a>
+      <a href="#" id="authActionLink" class="nav-link">Logout</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="recurring-container">
+      <div class="recurring-header">
+        <h1 class="recurring-title">Recurring Bills</h1>
+        <p style="color: #9ca3af; margin-bottom: 30px;">Auto-detected bills that occur regularly</p>
+      </div>
+
+      <!-- Statistics -->
+      <div class="recurring-stats">
+        <div class="stat-box">
+          <div class="stat-number">5</div>
+          <div class="stat-label">Total Recurring</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">₹7,198</div>
+          <div class="stat-label">Monthly Total</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">₹86,376</div>
+          <div class="stat-label">Yearly Cost</div>
+        </div>
+      </div>
+
+      <!-- Recurring Bills Cards -->
+      <div class="recurring-grid">
+        <!-- Electricity -->
+        <div class="recurring-card">
+          <div class="recurring-header-card">
+            <div class="recurring-icon"><i class="fa-solid fa-bolt"></i></div>
+            <div style="flex: 1; margin-left: 15px;">
+              <div class="recurring-name">Bright Home - Electricity</div>
+              <div style="font-size: 12px; color: #9ca3af;">Monthly • Due 1st</div>
+            </div>
+          </div>
+          <div class="recurring-details">
+            <div class="recurring-detail"><i class="fa-solid fa-calendar"></i> Every 1st of month</div>
+            <div class="recurring-detail"><i class="fa-solid fa-repeat"></i> Frequency: Monthly</div>
+            <div class="recurring-detail"><i class="fa-solid fa-check"></i> Confidence: 98%</div>
+          </div>
+          <div class="recurring-footer">
+            <div class="recurring-amount">₹1,250</div>
+            <div class="recurring-actions">
+              <button class="recurring-btn"><i class="fa-solid fa-bell"></i> Remind</button>
+              <button class="recurring-btn"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Internet -->
+        <div class="recurring-card">
+          <div class="recurring-header-card">
+            <div class="recurring-icon"><i class="fa-solid fa-wifi"></i></div>
+            <div style="flex: 1; margin-left: 15px;">
+              <div class="recurring-name">Airtel Internet</div>
+              <div style="font-size: 12px; color: #9ca3af;">Monthly • Due 5th</div>
+            </div>
+          </div>
+          <div class="recurring-details">
+            <div class="recurring-detail"><i class="fa-solid fa-calendar"></i> Every 5th of month</div>
+            <div class="recurring-detail"><i class="fa-solid fa-repeat"></i> Frequency: Monthly</div>
+            <div class="recurring-detail"><i class="fa-solid fa-check"></i> Confidence: 96%</div>
+          </div>
+          <div class="recurring-footer">
+            <div class="recurring-amount">₹999</div>
+            <div class="recurring-actions">
+              <button class="recurring-btn"><i class="fa-solid fa-bell"></i> Remind</button>
+              <button class="recurring-btn"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- School Fees -->
+        <div class="recurring-card">
+          <div class="recurring-header-card">
+            <div class="recurring-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div style="flex: 1; margin-left: 15px;">
+              <div class="recurring-name">School Fees</div>
+              <div style="font-size: 12px; color: #9ca3af;">Quarterly • 1st Month</div>
+            </div>
+          </div>
+          <div class="recurring-details">
+            <div class="recurring-detail"><i class="fa-solid fa-calendar"></i> Every 3 months</div>
+            <div class="recurring-detail"><i class="fa-solid fa-repeat"></i> Frequency: Quarterly</div>
+            <div class="recurring-detail"><i class="fa-solid fa-check"></i> Confidence: 92%</div>
+          </div>
+          <div class="recurring-footer">
+            <div class="recurring-amount">₹5,000</div>
+            <div class="recurring-actions">
+              <button class="recurring-btn"><i class="fa-solid fa-bell"></i> Remind</button>
+              <button class="recurring-btn"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rent -->
+        <div class="recurring-card">
+          <div class="recurring-header-card">
+            <div class="recurring-icon"><i class="fa-solid fa-home"></i></div>
+            <div style="flex: 1; margin-left: 15px;">
+              <div class="recurring-name">Apartment Rent</div>
+              <div style="font-size: 12px; color: #9ca3af;">Monthly • Due 25th</div>
+            </div>
+          </div>
+          <div class="recurring-details">
+            <div class="recurring-detail"><i class="fa-solid fa-calendar"></i> Every 25th of month</div>
+            <div class="recurring-detail"><i class="fa-solid fa-repeat"></i> Frequency: Monthly</div>
+            <div class="recurring-detail"><i class="fa-solid fa-check"></i> Confidence: 100%</div>
+          </div>
+          <div class="recurring-footer">
+            <div class="recurring-amount">₹15,000</div>
+            <div class="recurring-actions">
+              <button class="recurring-btn"><i class="fa-solid fa-bell"></i> Remind</button>
+              <button class="recurring-btn"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Streaming -->
+        <div class="recurring-card">
+          <div class="recurring-header-card">
+            <div class="recurring-icon"><i class="fa-solid fa-tv"></i></div>
+            <div style="flex: 1; margin-left: 15px;">
+              <div class="recurring-name">OTT Subscription</div>
+              <div style="font-size: 12px; color: #9ca3af;">Monthly • Random Date</div>
+            </div>
+          </div>
+          <div class="recurring-details">
+            <div class="recurring-detail"><i class="fa-solid fa-calendar"></i> Every month</div>
+            <div class="recurring-detail"><i class="fa-solid fa-repeat"></i> Frequency: Monthly</div>
+            <div class="recurring-detail"><i class="fa-solid fa-check"></i> Confidence: 87%</div>
+          </div>
+          <div class="recurring-footer">
+            <div class="recurring-amount">₹299</div>
+            <div class="recurring-actions">
+              <button class="recurring-btn"><i class="fa-solid fa-bell"></i> Remind</button>
+              <button class="recurring-btn"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

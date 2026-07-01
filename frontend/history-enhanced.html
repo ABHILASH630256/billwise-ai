@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History — BillWise AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .history-container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+    .history-header { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
+    .history-title { font-size: 32px; font-weight: 800; color: #f3f4f6; }
+    
+    .view-toggle { display: flex; gap: 10px; }
+    .toggle-btn { padding: 10px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(167, 139, 250, 0.2); border-radius: 8px; color: #d1d5db; cursor: pointer; transition: all 0.3s ease; }
+    .toggle-btn.active { background: rgba(167, 139, 250, 0.2); border-color: rgba(167, 139, 250, 0.6); color: #a78bfa; }
+    
+    .timeline { position: relative; padding: 20px 0; }
+    .timeline::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #a78bfa, transparent); }
+    
+    .timeline-section { margin-bottom: 40px; }
+    .timeline-date { font-size: 14px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+    
+    .bill-item {
+      position: relative;
+      margin-left: 50px;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .bill-item::before {
+      content: '';
+      position: absolute;
+      left: -39px;
+      top: 24px;
+      width: 12px;
+      height: 12px;
+      background: #a78bfa;
+      border: 3px solid #0f0c29;
+      border-radius: 50%;
+    }
+    
+    .bill-item:hover { background: rgba(167, 139, 250, 0.1); border-color: rgba(167, 139, 250, 0.5); }
+    
+    .bill-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .bill-vendor { font-size: 16px; font-weight: 700; color: #f3f4f6; }
+    .bill-badges { display: flex; gap: 8px; }
+    .bill-badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-recurring { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .badge-duplicate { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+    
+    .bill-details { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: #9ca3af; font-size: 14px; }
+    .bill-actions { display: flex; gap: 10px; }
+    .bill-btn { padding: 8px 12px; background: rgba(167, 139, 250, 0.2); border: 1px solid rgba(167, 139, 250, 0.4); border-radius: 6px; color: #a78bfa; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s ease; }
+    .bill-btn:hover { background: rgba(167, 139, 250, 0.4); }
+    
+    .bill-amount { font-size: 18px; font-weight: 800; color: #a78bfa; }
+    
+    .table-view { display: none; }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .history-table th {
+      background: rgba(167, 139, 250, 0.1);
+      padding: 16px;
+      text-align: left;
+      color: #d1d5db;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    
+    .history-table td { padding: 16px; border-bottom: 1px solid rgba(167, 139, 250, 0.1); color: #d1d5db; }
+    .history-table tr:hover { background: rgba(167, 139, 250, 0.05); }
+
+    @media (max-width: 768px) {
+      .bill-item { margin-left: 30px; }
+      .bill-item::before { left: -21px; }
+      .timeline::before { left: 5px; }
+      .history-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="upload.html" class="nav-link">Upload</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <a href="history.html" class="nav-link active">History</a>
+      <a href="#" id="authActionLink" class="nav-link">Logout</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="history-container">
+      <div class="history-header">
+        <h1 class="history-title">Bill History</h1>
+        <div class="view-toggle">
+          <button class="toggle-btn active" onclick="switchView('timeline')">
+            <i class="fa-solid fa-timeline"></i> Timeline
+          </button>
+          <button class="toggle-btn" onclick="switchView('table')">
+            <i class="fa-solid fa-table"></i> Table
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline View -->
+      <div id="timelineView" class="timeline-view">
+        <div class="timeline">
+          <!-- Today -->
+          <div class="timeline-section">
+            <div class="timeline-date">Today</div>
+            <div class="bill-item">
+              <div class="bill-header">
+                <span class="bill-vendor"><i class="fa-solid fa-basket-shopping"></i> DMART Supermarket</span>
+                <span class="bill-amount">₹1,250</span>
+              </div>
+              <div class="bill-details">
+                <span><strong>Category:</strong> Groceries</span>
+                <span><strong>Date:</strong> Today, 2:45 PM</span>
+              </div>
+              <div class="bill-actions">
+                <button class="bill-btn"><i class="fa-solid fa-eye"></i> View</button>
+                <button class="bill-btn"><i class="fa-solid fa-download"></i> Download</button>
+                <button class="bill-btn"><i class="fa-solid fa-trash"></i> Delete</button>
+              </div>
+            </div>
+
+            <div class="bill-item">
+              <div class="bill-header">
+                <span class="bill-vendor"><i class="fa-solid fa-hospital"></i> Apollo Pharmacy</span>
+                <span class="bill-amount">₹850</span>
+              </div>
+              <div class="bill-details">
+                <span><strong>Category:</strong> Medical</span>
+                <span><strong>Date:</strong> Today, 10:30 AM</span>
+              </div>
+              <div class="bill-actions">
+                <button class="bill-btn"><i class="fa-solid fa-eye"></i> View</button>
+                <button class="bill-btn"><i class="fa-solid fa-download"></i> Download</button>
+                <button class="bill-btn"><i class="fa-solid fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Yesterday -->
+          <div class="timeline-section">
+            <div class="timeline-date">Yesterday</div>
+            <div class="bill-item">
+              <div class="bill-header">
+                <span class="bill-vendor"><i class="fa-solid fa-utensils"></i> Flavor Point</span>
+                <span class="bill-amount">₹520</span>
+              </div>
+              <div class="bill-details">
+                <span><strong>Category:</strong> Food</span>
+                <span><strong>Date:</strong> 29 Jun, 7:15 PM</span>
+              </div>
+              <div class="bill-badges">
+                <span class="bill-badge badge-recurring"><i class="fa-solid fa-repeat"></i> Recurring</span>
+              </div>
+              <div class="bill-actions">
+                <button class="bill-btn"><i class="fa-solid fa-eye"></i> View</button>
+                <button class="bill-btn"><i class="fa-solid fa-download"></i> Download</button>
+                <button class="bill-btn"><i class="fa-solid fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- This Week -->
+          <div class="timeline-section">
+            <div class="timeline-date">This Week</div>
+            <div class="bill-item">
+              <div class="bill-header">
+                <span class="bill-vendor"><i class="fa-solid fa-book"></i> Sapna Book House</span>
+                <span class="bill-amount">₹1,450</span>
+              </div>
+              <div class="bill-details">
+                <span><strong>Category:</strong> Education</span>
+                <span><strong>Date:</strong> 27 Jun, 4:20 PM</span>
+              </div>
+              <div class="bill-actions">
+                <button class="bill-btn"><i class="fa-solid fa-eye"></i> View</button>
+                <button class="bill-btn"><i class="fa-solid fa-download"></i> Download</button>
+                <button class="bill-btn"><i class="fa-solid fa-trash"></i> Delete</button>
+              </div>
+            </div>
+
+            <div class="bill-item">
+              <div class="bill-header">
+                <span class="bill-vendor"><i class="fa-solid fa-bolt"></i> Bright Home</span>
+                <span class="bill-amount">₹2,150</span>
+              </div>
+              <div class="bill-details">
+                <span><strong>Category:</strong> Electricity</span>
+                <span><strong>Date:</strong> 25 Jun, 3:10 PM</span>
+              </div>
+              <div class="bill-badges">
+                <span class="bill-badge badge-recurring"><i class="fa-solid fa-repeat"></i> Recurring</span>
+              </div>
+              <div class="bill-actions">
+                <button class="bill-btn"><i class="fa-solid fa-eye"></i> View</button>
+                <button class="bill-btn"><i class="fa-solid fa-download"></i> Download</button>
+                <button class="bill-btn"><i class="fa-solid fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table View -->
+      <div id="tableView" class="table-view">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><i class="fa-solid fa-basket-shopping"></i> DMART</td>
+              <td>Groceries</td>
+              <td>₹1,250</td>
+              <td>Today</td>
+              <td><span style="color: #10b981;"><i class="fa-solid fa-check"></i> Confirmed</span></td>
+              <td><button class="bill-btn"><i class="fa-solid fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td><i class="fa-solid fa-hospital"></i> Apollo</td>
+              <td>Medical</td>
+              <td>₹850</td>
+              <td>Today</td>
+              <td><span style="color: #10b981;"><i class="fa-solid fa-check"></i> Confirmed</span></td>
+              <td><button class="bill-btn"><i class="fa-solid fa-trash"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function switchView(view) {
+      if (view === 'timeline') {
+        document.getElementById('timelineView').style.display = 'block';
+        document.getElementById('tableView').style.display = 'none';
+        document.querySelectorAll('.toggle-btn')[0].classList.add('active');
+        document.querySelectorAll('.toggle-btn')[1].classList.remove('active');
+      } else {
+        document.getElementById('timelineView').style.display = 'none';
+        document.getElementById('tableView').style.display = 'block';
+        document.querySelectorAll('.toggle-btn')[0].classList.remove('active');
+        document.querySelectorAll('.toggle-btn')[1].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

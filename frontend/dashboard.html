@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — BillWise AI</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Chart library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body class="dashboard-body">
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-receipt nav-logo-icon"></i>
+      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="upload.html" class="nav-link">Upload Bill</a>
+      <a href="dashboard.html" class="nav-link active">Dashboard</a>
+      <a href="history.html" class="nav-link">History</a>
+      <a href="#" id="authActionLink" class="nav-link">Logout</a>
+    </div>
+
+    <a href="upload.html" class="btn-nav-cta">
+      <i class="fa-solid fa-plus"></i> Scan Bill
+    </a>
+
+    <button class="nav-hamburger" id="hamburger">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </nav>
+
+  <main class="main-content">
+
+      <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub">Your spending overview at a glance.</p>
+      </div>
+
+      <section class="card dashboard-hero-card">
+        <div>
+          <span class="hero-label">Smart insights</span>
+          <h2>Track spending, spot trends, and manage receipts faster.</h2>
+          <p>Every scanned bill is saved to your history automatically. Use the dashboard to see category breakdowns and monthly spending growth.</p>
+        </div>
+        <a href="upload.html" class="btn-primary btn-compact">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          Scan New Bill
+        </a>
+      </section>
+
+      <!-- STAT CARDS -->
+      <div class="stats-grid">
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap" style="background:rgba(99,102,241,0.15)">
+            <i class="fa-solid fa-indian-rupee-sign" style="color:#6366f1"></i>
+          </div>
+
+          <div class="stat-info">
+            <span class="stat-label">Total Spending</span>
+            <span class="stat-value" id="totalSpending">₹0.00</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap" style="background:rgba(16,185,129,0.15)">
+            <i class="fa-solid fa-receipt" style="color:#10b981"></i>
+          </div>
+
+          <div class="stat-info">
+            <span class="stat-label">Total Bills</span>
+            <span class="stat-value" id="totalBills">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.15)">
+            <i class="fa-solid fa-trophy" style="color:#f59e0b"></i>
+          </div>
+
+          <div class="stat-info">
+            <span class="stat-label">Top Category</span>
+            <span class="stat-value" id="topCategory">—</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrap" style="background:rgba(239,68,68,0.15)">
+            <i class="fa-solid fa-calendar" style="color:#ef4444"></i>
+          </div>
+
+          <div class="stat-info">
+            <span class="stat-label">This Month</span>
+            <span class="stat-value" id="thisMonth">₹0.00</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CHARTS -->
+      <div class="chart-theme-controls" id="chartThemeControls">
+        <button data-theme="default" class="active">Default</button>
+        <button data-theme="pastel">Pastel</button>
+        <button data-theme="neon">Neon</button>
+      </div>
+
+      <div class="charts-row">
+
+        <div class="card chart-card">
+          <h3 class="card-title">
+            <i class="fa-solid fa-chart-pie"></i>
+            Spending by Category
+          </h3>
+
+          <div class="chart-wrap" style="height: 320px;">
+            <!-- IMPORTANT: pieChart ID -->
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <h3 class="card-title">
+            <i class="fa-solid fa-chart-bar"></i>
+            Monthly Spending
+          </h3>
+
+          <div class="chart-wrap" style="height: 320px;">
+            <!-- IMPORTANT: barChart ID -->
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BUDGETS -->
+      <div class="card table-card" id="budgetCard">
+        <h3 class="card-title">
+          <i class="fa-solid fa-wallet"></i>
+          Budgets & Alerts
+        </h3>
+
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+          <select id="budgetCategory" class="filter-select">
+            <option value="">-- Select Category --</option>
+          </select>
+
+          <input id="budgetAmount" class="input-field" placeholder="Monthly limit (₹)" style="width:180px;" />
+
+          <button id="addBudgetBtn" class="btn-primary btn-compact">Add / Update Budget</button>
+        </div>
+
+        <div id="budgetList"></div>
+      </div>
+
+      <!-- RECENT BILLS -->
+      <div class="card table-card">
+        <h3 class="card-title">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          Recent Bills
+        </h3>
+
+        <div class="table-wrap">
+          <table class="bills-table">
+            <thead>
+              <tr>
+                <th>Shop</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Uploaded</th>
+              </tr>
+            </thead>
+
+            <tbody id="recentTableBody">
+              <tr>
+                <td colspan="5" class="empty-row">
+                  Loading bills...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- TOAST MESSAGES -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Your JavaScript file -->
+  <script src="script.js"></script>
+
+</body>
+</html>
