@@ -6,17 +6,31 @@ load_dotenv()
 
 
 def get_connection():
-    """Create and return a MySQL connection."""
-    return pymysql.connect(
-        host=os.getenv("MYSQL_HOST", "localhost"),
-        port=int(os.getenv("MYSQL_PORT", 3306)),
-        user=os.getenv("MYSQL_USER", "root"),
-        password=os.getenv("MYSQL_PASSWORD", ""),
-        database=os.getenv("MYSQL_DATABASE", "billwise_ai"),
-        charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor,
-        autocommit=False
-    )
+    """Create and return a MySQL connection (supports localhost and Aiven SSL)."""
+
+    host = os.getenv("MYSQL_HOST", "localhost")
+    port = int(os.getenv("MYSQL_PORT", 3306))
+    user = os.getenv("MYSQL_USER", "root")
+    password = os.getenv("MYSQL_PASSWORD", "")
+    database = os.getenv("MYSQL_DATABASE", "billwise_ai")
+
+    connection_args = {
+        "host": host,
+        "port": port,
+        "user": user,
+        "password": password,
+        "database": database,
+        "charset": "utf8mb4",
+        "cursorclass": pymysql.cursors.DictCursor,
+        "autocommit": False,
+    }
+
+    if host != "localhost" and host != "127.0.0.1":
+        connection_args["ssl"] = {
+        "ca": os.getenv("MYSQL_SSL_CA")
+    }
+
+    return pymysql.connect(**connection_args)
 
 
 def save_bill(image_name, shop_name, bill_date, amount, extracted_text, category, confidence):

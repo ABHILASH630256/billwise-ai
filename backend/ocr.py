@@ -1,17 +1,16 @@
 import os
 import re
-import pytesseract
+import easyocr
+import numpy as np
 from PIL import Image, ImageFilter, ImageEnhance
 from dotenv import load_dotenv
-
 load_dotenv()
 
-# Tesseract path from backend/.env
-TESSERACT_PATH = os.getenv(
-    'TESSERACT_PATH',
-    r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# EasyOCR reader (loaded only once)
+reader = easyocr.Reader(
+    ['en'],
+    gpu=False
 )
-pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
 
 def preprocess_image(img: Image.Image) -> Image.Image:
@@ -31,14 +30,21 @@ def preprocess_image(img: Image.Image) -> Image.Image:
 
 
 def extract_text(image_path: str) -> str:
-    """Extract raw text using Tesseract."""
+    """Extract text using EasyOCR."""
+
     try:
         img = Image.open(image_path)
         img = preprocess_image(img)
 
-        # psm 6 works well for receipt / bill layout
-        text = pytesseract.image_to_string(img, config='--oem 3 --psm 6')
-        return text.strip()
+        img_np = np.array(img)
+
+        results = reader.readtext(
+            img_np,
+            detail=0,
+            paragraph=True
+        )
+
+        return "\n".join(results).strip()
 
     except Exception as e:
         print(f"[OCR ERROR] {e}")

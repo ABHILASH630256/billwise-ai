@@ -210,9 +210,10 @@ function initUploadPage() {
       formData.append("bill_image", selectedFile);
 
       const scanResponse = await fetch(`${API_URL}/api/scan`, {
-        method: "POST",
-        body: formData
-      });
+    method: "POST",
+    credentials: "include",
+    body: formData
+});
 
       const scanData = await scanResponse.json();
       if (!scanResponse.ok) throw new Error(scanData.error || "Scanning failed.");
@@ -241,25 +242,30 @@ function initUploadPage() {
 
     try {
       const response = await fetch(`${API_URL}/api/save`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          image_name: uploadedFilename,
-          shop_name: scannedData.shop_name || "Unknown",
-          bill_date: scannedData.bill_date || "",
-          amount: Number(manualAmount?.value || scannedData.amount || 0),
-          extracted_text: scannedData.extracted_text || "",
-          category: scannedData.category || "Other",
-          confidence: scannedData.confidence || 0
-        })
-      });
+    method: "POST",
+    credentials: "include",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        image_name: uploadedFilename,
+        shop_name: scannedData.shop_name || "Unknown",
+        bill_date: scannedData.bill_date || "",
+        amount: Number(manualAmount?.value || scannedData.amount || 0),
+        extracted_text: scannedData.extracted_text || "",
+        category: scannedData.category || "Other",
+        confidence: scannedData.confidence || 0
+    })
+});
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to save bill.");
       showToast("Bill saved successfully.");
       // Refresh dashboard data used by budgets and run budget checks
       try {
-        const dbRes = await fetch(`${API_URL}/api/dashboard`);
+        const dbRes = await fetch(`${API_URL}/api/dashboard`, {
+    credentials: "include"
+});
         const dbData = await dbRes.json();
         if (dbRes.ok) {
           window.__latestDashboard = dbData;
@@ -363,9 +369,16 @@ function initDashboardPage() {
 
   async function loadDashboard() {
     try {
-      const response = await fetch(`${API_URL}/api/dashboard`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to load dashboard.");
+     const response = await fetch(`${API_URL}/api/dashboard`, {
+    method: "GET",
+    credentials: "include"
+});
+
+const data = await response.json();
+
+if (!response.ok) {
+    throw new Error(data.error || "Unable to load dashboard.");
+}
 
       if (totalSpending) totalSpending.textContent = formatCurrency(data.total_spending);
       if (totalBills) totalBills.textContent = data.total_bills ?? 0;
@@ -560,7 +573,10 @@ function initHistoryPage() {
         const id = event.currentTarget.getAttribute("data-id");
         if (!id) return;
         try {
-          const response = await fetch(`${API_URL}/api/bills/${id}`, { method: "DELETE" });
+          const response = await fetch(`${API_URL}/api/bills/${id}`, {
+    method: "DELETE",
+    credentials: "include"
+});
           const data = await response.json();
           if (!response.ok) throw new Error(data.error || "Unable to delete bill.");
           showToast("Bill deleted.");
@@ -588,7 +604,9 @@ function initHistoryPage() {
       if (searchInput?.value) params.set("search", searchInput.value.trim());
       if (catFilter?.value) params.set("category", catFilter.value);
 
-      const response = await fetch(`${API_URL}/api/bills?${params.toString()}`);
+      const response = await fetch(`${API_URL}/api/bills?${params.toString()}`, {
+    credentials: "include"
+});
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to load bills.");
 
@@ -729,9 +747,12 @@ function initAuthAction() {
 
     try {
       await fetch(`${API_URL}/api/logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
     } catch (error) {
       console.warn('Logout failed', error);
     } finally {

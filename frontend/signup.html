@@ -93,11 +93,18 @@
       }
 
       try {
-        const response = await fetch(`${API_URL}/api/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, confirm_password: confirmPassword })
-        });
+       const response = await fetch(`${API_URL}/api/signup`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        username,
+        password,
+        confirm_password: confirmPassword
+    })
+});
 
         const data = await response.json();
 

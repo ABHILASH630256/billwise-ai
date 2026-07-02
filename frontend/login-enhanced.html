@@ -524,11 +524,17 @@
       loginBtn.innerHTML = '<div class="spinner"></div><span>Signing in...</span>';
 
       try {
-        const response = await fetch(`${API_URL}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
+       const response = await fetch(`${API_URL}/api/login`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        username,
+        password
+    })
+});
 
         const data = await response.json();
 
