@@ -39,8 +39,19 @@ from predictor import predict
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_FOLDER = os.path.abspath(
-    os.path.join(BASE_DIR, os.pardir, "frontend")
+
+# In local dev, app.py lives in backend/ and frontend/ is a sibling
+# directory (../frontend). In the Docker image, the Dockerfile copies
+# backend/'s contents directly into /app and frontend/ into /app/frontend,
+# so app.py and frontend/ end up in the SAME directory instead.
+# Check both locations so this works in either layout.
+_FRONTEND_CANDIDATES = [
+    os.path.join(BASE_DIR, "frontend"),
+    os.path.abspath(os.path.join(BASE_DIR, os.pardir, "frontend")),
+]
+FRONTEND_FOLDER = next(
+    (path for path in _FRONTEND_CANDIDATES if os.path.isdir(path)),
+    _FRONTEND_CANDIDATES[-1],
 )
 
 app = Flask(
