@@ -1,16 +1,62 @@
 import os
 import re
-import easyocr
+import shutil
+import cv2
+import pytesseract
 import numpy as np
 from PIL import Image, ImageFilter, ImageEnhance
 from dotenv import load_dotenv
 load_dotenv()
 
-# EasyOCR reader (loaded only once)
-reader = easyocr.Reader(
-    ['en'],
-    gpu=False
-)
+TESSERACT_PATH = os.getenv("TESSERACT_PATH")
+
+# Common install locations, checked only as a last resort.
+_FALLBACK_PATHS = [
+    "/usr/bin/tesseract",
+    "/usr/local/bin/tesseract",
+    "/opt/homebrew/bin/tesseract",
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+    r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+]
+
+
+def _resolve_tesseract_cmd():
+    """
+    Figure out a working tesseract binary instead of blindly trusting
+    TESSERACT_PATH from .env (which is often a machine-specific,
+    OS-specific path that doesn't exist on the server/deployment).
+    Order of preference:
+      1. TESSERACT_PATH from .env, but only if that file actually exists
+      2. `tesseract` found on the system PATH (works on Linux servers
+         where it's installed via apt/apk, e.g. Docker, Render, etc.)
+      3. A handful of common install locations
+    """
+    if TESSERACT_PATH and os.path.isfile(TESSERACT_PATH):
+        return TESSERACT_PATH
+
+    on_path = shutil.which("tesseract")
+    if on_path:
+        return on_path
+
+    for candidate in _FALLBACK_PATHS:
+        if os.path.isfile(candidate):
+            return candidate
+
+    return None
+
+
+_resolved_cmd = _resolve_tesseract_cmd()
+
+if _resolved_cmd:
+    pytesseract.pytesseract.tesseract_cmd = _resolved_cmd
+    print(f">>> Using tesseract binary: {_resolved_cmd}")
+else:
+    print(
+        ">>> WARNING: Could not locate a tesseract binary. "
+        "OCR will fail until Tesseract is installed and either on PATH "
+        "or pointed to correctly via TESSERACT_PATH in .env."
+    )
+
 
 
 def preprocess_image(img: Image.Image) -> Image.Image:
@@ -28,26 +74,56 @@ def preprocess_image(img: Image.Image) -> Image.Image:
 
     return img
 
-
 def extract_text(image_path: str) -> str:
-    """Extract text using EasyOCR."""
+    print(">>> extract_text() called")
+    """Extract text using Tesseract OCR."""
 
-    try:
-        img = Image.open(image_path)
-        img = preprocess_image(img)
-
-        img_np = np.array(img)
-
-        results = reader.readtext(
-            img_np,
-            detail=0,
-            paragraph=True
+    if not _resolved_cmd:
+        raise RuntimeError(
+            "Tesseract OCR is not installed / not found. "
+            "Install it and/or set TESSERACT_PATH in backend/.env to its "
+            "full path (e.g. on Linux: sudo apt install tesseract-ocr; "
+            "on Windows: install from https://github.com/UB-Mannheim/tesseract/wiki)."
         )
 
-        return "\n".join(results).strip()
+    try:
+        image = cv2.imread(image_path)
+
+        if image is None:
+            return ""
+
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (3, 3), 0)
+
+        gray = cv2.adaptiveThreshold(
+            gray,
+            255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY,
+            31,
+            2
+        )
+
+        pil = Image.fromarray(gray)
+        pil = preprocess_image(pil)
+
+        text = pytesseract.image_to_string(
+            pil,
+            lang="eng",
+            config="--oem 3 --psm 6"
+        )
+
+        print("\n========== OCR OUTPUT ==========")
+        print(text)
+        print("================================\n")
+
+        text = re.sub(r'\n+', '\n', text)
+        print("OCR RESULT:")
+        print(text)
+        return text.strip()
 
     except Exception as e:
-        print(f"[OCR ERROR] {e}")
+        print("[OCR ERROR]", e)
         return ""
 
 

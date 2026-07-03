@@ -3,7 +3,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
+print("HOST =", os.getenv("MYSQL_HOST"))
+print("PORT =", os.getenv("MYSQL_PORT"))
+print("USER =", os.getenv("MYSQL_USER"))
 
 def get_connection():
     """Create and return a MySQL connection (supports localhost and Aiven SSL)."""

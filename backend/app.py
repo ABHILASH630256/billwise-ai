@@ -374,10 +374,15 @@ def scan():
 
             filename, image_path = save_uploaded_image(file)
 
+            print("Calling scan_image_and_predict()...")
+
             response = scan_image_and_predict(
                 image_path,
                 filename
             )
+
+            print("Returned from scan_image_and_predict()")
+            print(response)
 
             return jsonify(response), 200
 
@@ -396,7 +401,6 @@ def scan():
                 )
             }), 400
 
-        # Security: keep only actual filename
         filename = secure_filename(filename)
 
         image_path = os.path.join(
@@ -409,10 +413,15 @@ def scan():
                 "error": f"File not found: {filename}"
             }), 404
 
+        print("Calling scan_image_and_predict()...")
+
         response = scan_image_and_predict(
             image_path,
             filename
         )
+
+        print("Returned from scan_image_and_predict()")
+        print(response)
 
         return jsonify(response), 200
 
@@ -431,7 +440,6 @@ def scan():
         return jsonify({
             "error": str(error)
         }), 500
-
 
 # =========================================================
 # PREDICT CATEGORY ONLY

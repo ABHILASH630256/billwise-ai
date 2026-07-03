@@ -10,10 +10,7 @@ numpy>=1.26.0
 scikit-learn>=1.3.0
 joblib>=1.3.0
 
-easyocr==1.7.2
 opencv-python-headless==4.10.0.84
-
-torch
-torchvision
+pytesseract==0.3.13
 
 gunicorn==23.0.0
