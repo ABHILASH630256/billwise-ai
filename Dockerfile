@@ -11,10 +11,11 @@ WORKDIR /app
 
 COPY backend/ .
 COPY frontend ./frontend
+COPY ml ./ml
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 10000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--timeout", "120", "app:app"]

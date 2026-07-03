@@ -215,7 +215,17 @@ function initUploadPage() {
     body: formData
 });
 
-      const scanData = await scanResponse.json();
+      const rawBody = await scanResponse.text();
+      let scanData;
+      try {
+        scanData = JSON.parse(rawBody);
+      } catch (parseError) {
+        throw new Error(
+          scanResponse.ok
+            ? "Server returned an unexpected response. Please try again."
+            : `Server error (${scanResponse.status}). The bill may have taken too long to scan — please try again with a smaller/clearer image.`
+        );
+      }
       if (!scanResponse.ok) throw new Error(scanData.error || "Scanning failed.");
 
       scannedData = scanData;

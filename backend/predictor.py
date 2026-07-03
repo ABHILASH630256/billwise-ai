@@ -7,11 +7,21 @@ import re
 import joblib
 import numpy as np
 
-# Path to model file:
-# backend/predictor.py -> billwise-ai/ml/expense_model.pkl
+# Path to model file: ml/expense_model.pkl
+#
+# In local dev, predictor.py lives in backend/ and ml/ is a sibling
+# directory (../ml). In the Docker image, the Dockerfile copies
+# backend/'s contents directly into /app and ml/ into /app/ml, so
+# predictor.py and ml/ end up in the SAME directory instead.
+# Check both locations so this works in either layout.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.abspath(
-    os.path.join(BASE_DIR, "..", "ml", "expense_model.pkl")
+_MODEL_CANDIDATES = [
+    os.path.join(BASE_DIR, "ml", "expense_model.pkl"),
+    os.path.abspath(os.path.join(BASE_DIR, "..", "ml", "expense_model.pkl")),
+]
+MODEL_PATH = next(
+    (path for path in _MODEL_CANDIDATES if os.path.exists(path)),
+    _MODEL_CANDIDATES[-1],
 )
 
 CLEAN_RE = re.compile(r'[^a-zA-Z0-9\s]')
