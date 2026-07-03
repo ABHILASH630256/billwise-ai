@@ -10,6 +10,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 COPY backend/ .
+COPY frontend ./frontend
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
