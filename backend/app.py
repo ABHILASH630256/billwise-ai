@@ -190,7 +190,7 @@ def fetch_exchange_rate(from_currency: str, to_currency: str = "USD"):
             f"https://api.exchangerate.host/convert?from={from_currency}"
             f"&to={to_currency}&amount=1"
         )
-        with urllib.request.urlopen(url, timeout=10) as response:
+        with urllib.request.urlopen(url, timeout=4) as response:
             data = json.load(response)
 
         rate = data.get("info", {}).get("rate")

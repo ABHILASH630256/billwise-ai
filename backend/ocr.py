@@ -59,20 +59,57 @@ else:
 
 
 
-def preprocess_image(img: Image.Image) -> Image.Image:
-    """Improve receipt image before OCR."""
-    w, h = img.size
+def preprocess_for_ocr(image_path: str):
+    """
+    Prepare a bill photo for OCR.
 
-    # Increase image size for OCR
-    if w < 1400:
-        scale = 1400 / w
-        img = img.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+    Real phone photos (as opposed to clean digital scans) are large,
+    noisy, unevenly lit, and often slightly blurred/skewed. Running
+    adaptive thresholding on a full-resolution noisy photo turns it into
+    speckle noise, which is both very slow for Tesseract to scan and
+    unreadable. Normalizing to a bounded working resolution BEFORE any
+    thresholding fixes both problems at once.
+    """
+    image = cv2.imread(image_path)
 
-    img = img.convert('L')
-    img = ImageEnhance.Contrast(img).enhance(2.2)
-    img = img.filter(ImageFilter.SHARPEN)
+    if image is None:
+        return None
 
-    return img
+    h, w = image.shape[:2]
+
+    # Bound the working resolution. Upscale small images for legibility,
+    # downscale large phone-camera photos (often 3000-4000px+) for speed.
+    target_width = 1600
+    if w != target_width:
+        scale = target_width / w
+        interpolation = cv2.INTER_CUBIC if scale > 1 else cv2.INTER_AREA
+        image = cv2.resize(
+            image,
+            (target_width, max(1, int(h * scale))),
+            interpolation=interpolation
+        )
+
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Edge-preserving denoise. Much better than a plain Gaussian blur for
+    # real photos (removes sensor/lighting noise without smearing text).
+    gray = cv2.bilateralFilter(gray, 9, 75, 75)
+
+    thresh = cv2.adaptiveThreshold(
+        gray,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        25,
+        15
+    )
+
+    # Light morphological cleanup to remove leftover speckle noise.
+    kernel = np.ones((1, 1), np.uint8)
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+
+    return thresh
+
 
 def extract_text(image_path: str) -> str:
     print(">>> extract_text() called")
@@ -87,25 +124,12 @@ def extract_text(image_path: str) -> str:
         )
 
     try:
-        image = cv2.imread(image_path)
+        processed = preprocess_for_ocr(image_path)
 
-        if image is None:
+        if processed is None:
             return ""
 
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray, (3, 3), 0)
-
-        gray = cv2.adaptiveThreshold(
-            gray,
-            255,
-            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-            cv2.THRESH_BINARY,
-            31,
-            2
-        )
-
-        pil = Image.fromarray(gray)
-        pil = preprocess_image(pil)
+        pil = Image.fromarray(processed)
 
         text = pytesseract.image_to_string(
             pil,
@@ -136,6 +160,10 @@ def extract_shop_name(text: str) -> str:
         'date', 'phone', 'mobile', 'address', 'cashier',
         'customer', 'consumer', 'payment', 'thank'
     ]
+    skip_pattern = re.compile(
+        r'\b(?:' + '|'.join(re.escape(word) for word in skip_words) + r')\b',
+        re.IGNORECASE
+    )
 
     for line in lines[:8]:
         if len(line) < 3:
@@ -145,8 +173,9 @@ def extract_shop_name(text: str) -> str:
         if re.fullmatch(r'[\d\W]+', line):
             continue
 
-        # Ignore lines containing normal bill labels
-        if any(word in line.lower() for word in skip_words):
+        # Ignore lines containing normal bill labels (whole-word match only,
+        # so e.g. "tax" doesn't wrongly match inside "taxi")
+        if skip_pattern.search(line):
             continue
 
         # Ignore phone number style lines
@@ -160,7 +189,12 @@ def extract_shop_name(text: str) -> str:
 
 
 def extract_date(text: str) -> str:
-    """Extract date from OCR text."""
+    """Extract date from OCR text.
+
+    Prioritizes lines that are actually labeled as a date, so a bill
+    number like "CTS/24-25/1234" doesn't get mistaken for a date just
+    because it contains a similar-looking digit pattern.
+    """
     patterns = [
         r'\b(\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4})\b',
         r'\b(\d{4}[\/\-.]\d{1,2}[\/\-.]\d{1,2})\b',
@@ -168,6 +202,36 @@ def extract_date(text: str) -> str:
         r'\b((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{1,2},?\s+\d{4})\b'
     ]
 
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+
+    # Pass 1: lines explicitly labeled as a date (most reliable).
+    # Search only the text AFTER the "date" label itself, since the same
+    # line can also contain an unrelated number like a bill/invoice ID.
+    for line in lines:
+        label_match = re.search(r'\bdate\b\s*[:\-]?\s*', line, re.IGNORECASE)
+        if not label_match:
+            continue
+        after_label = line[label_match.end():]
+        for pattern in patterns:
+            match = re.search(pattern, after_label, re.IGNORECASE)
+            if match:
+                return match.group(1)
+
+    # Pass 2: any line NOT labeled as a bill/invoice/reference number,
+    # to avoid picking up digits from IDs like "Bill No: CTS/24-25/1234".
+    id_line_pattern = re.compile(
+        r'\b(?:bill\s*no|invoice\s*no|invoice\s*#|ref(?:erence)?\s*no|order\s*no|receipt\s*no|txn\s*id|transaction\s*id)\b',
+        re.IGNORECASE
+    )
+    for line in lines:
+        if id_line_pattern.search(line):
+            continue
+        for pattern in patterns:
+            match = re.search(pattern, line, re.IGNORECASE)
+            if match:
+                return match.group(1)
+
+    # Pass 3: fall back to scanning the whole text as a last resort.
     for pattern in patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
