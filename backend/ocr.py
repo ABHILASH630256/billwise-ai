@@ -237,6 +237,20 @@ def extract_shop_name(text: str) -> str:
             continue
 
         words = line.split()
+        if not words:
+            continue
+
+        # Reject lines that are clearly OCR noise rather than real text:
+        # garbled OCR on busy/decorative bill graphics tends to produce a
+        # string of scattered 1-2 letter "words" with random capitalization
+        # (e.g. "oy Sy gy Mg g M Sy Sy"). Real business names don't look
+        # like this, so measure average word length and bail if it's too
+        # low - better to fall through to "Unknown" than show garbage.
+        avg_word_len = sum(len(word) for word in words) / len(words)
+        short_word_ratio = sum(1 for word in words if len(word) <= 2) / len(words)
+        if avg_word_len < 2.6 or short_word_ratio > 0.6:
+            continue
+
         score = 0
 
         # Business names are almost always right at the very top
