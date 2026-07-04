@@ -239,11 +239,12 @@ def scan_image_and_predict(image_path, filename):
     amount = result.get("amount", None)
     currency = result.get("currency", "INR")
 
-    # NOTE: this used to call an external exchange-rate API (fetch_exchange_rate ->
-    # urlopen, up to a 4s timeout) synchronously on every scan, even though the
-    # frontend never displays this value. That blocking network call was the
-    # biggest contributor to slow scans. Skipped now so OCR results return
-    # immediately.
+    # NOTE: USD conversion used to call an external exchange-rate API
+    # (fetch_exchange_rate -> urlopen, up to a 4s timeout) synchronously
+    # on every single scan, even though the frontend never displays this
+    # value. That network round trip was the single biggest contributor
+    # to "slow" scans. It is now skipped during scanning entirely - OCR
+    # results return immediately.
     converted_amount_usd = None
     converted_amount_usd_formatted = None
 
