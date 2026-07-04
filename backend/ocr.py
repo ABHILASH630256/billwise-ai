@@ -168,20 +168,48 @@ def extract_text(image_path: str) -> str:
 
 
 def extract_shop_name(text: str) -> str:
-    """Get likely shop/vendor name from first few OCR lines."""
+    """
+    Get likely shop/vendor name from the OCR'd receipt text.
+
+    Bills with a two-column header (e.g. "Bill No / Date / Time" next to
+    "Driver Name / Vehicle No / Payment Mode") can OCR into a jumbled
+    line order. The old version returned the FIRST line that didn't
+    contain an obvious keyword like "tax" or "phone" - which meant a
+    line like "Driver Name: Rajesh Kumar" or "Vehicle No: DL01AB1234"
+    could easily win by mistake, since neither contains any of those
+    keywords.
+
+    This version instead:
+    1. Explicitly rejects "Label: value" / "Label - value" style lines,
+       which covers most receipt metadata regardless of the label word.
+    2. Scores every remaining candidate line instead of taking the
+       first match, favoring lines near the very top, in all-caps or
+       title case (how business names are usually printed), short
+       (2-5 words), and without digits - then picks the best one.
+    """
     lines = [line.strip() for line in text.splitlines() if line.strip()]
 
     skip_words = [
-        'receipt', 'invoice', 'bill', 'tax', 'gst', 'total',
-        'date', 'phone', 'mobile', 'address', 'cashier',
-        'customer', 'consumer', 'payment', 'thank'
+        'receipt', 'invoice', 'bill', 'tax', 'gst', 'gstin', 'pan',
+        'total', 'date', 'phone', 'mobile', 'address', 'cashier',
+        'customer', 'consumer', 'payment', 'thank', 'driver', 'vehicle',
+        'trip', 'mode', 'pickup', 'drop', 'location', 'distance',
+        'fare', 'charge', 'toll', 'surge', 'order', 'table', 'time',
+        'travel', 'base'
     ]
     skip_pattern = re.compile(
         r'\b(?:' + '|'.join(re.escape(word) for word in skip_words) + r')\b',
         re.IGNORECASE
     )
 
-    for line in lines[:8]:
+    # Matches "Label: value" or "Label - value" style metadata lines,
+    # regardless of what the label word actually is. Business names are
+    # essentially never written this way.
+    label_line_pattern = re.compile(r'^[A-Za-z][A-Za-z\s./]{0,25}[:\-]\s*\S')
+
+    candidates = []
+
+    for index, line in enumerate(lines[:8]):
         if len(line) < 3:
             continue
 
@@ -194,12 +222,48 @@ def extract_shop_name(text: str) -> str:
         if skip_pattern.search(line):
             continue
 
-        # Ignore phone number style lines
-        digits = re.sub(r'\D', '', line)
-        if len(digits) >= 8:
+        # Ignore "Label: value" metadata lines regardless of label word
+        if label_line_pattern.match(line):
             continue
 
-        return line[:80]
+        # Ignore phone number style lines
+        digits = re.sub(r'\D', '', line)
+        if len(digits) >= 6:
+            continue
+
+        # Ignore lines that are mostly punctuation/symbols rather than text
+        alpha_chars = sum(character.isalpha() for character in line)
+        if alpha_chars < max(3, len(line) * 0.5):
+            continue
+
+        words = line.split()
+        score = 0
+
+        # Business names are almost always right at the very top
+        if index < 3:
+            score += 3
+        elif index < 5:
+            score += 1
+
+        # Business names are usually styled distinctly (all-caps or title case)
+        if line.isupper():
+            score += 2
+        elif line.istitle():
+            score += 1
+
+        # Prefer short, name-like lines over long descriptive sentences
+        if 1 <= len(words) <= 5:
+            score += 1
+
+        # Any digits at all make it more likely to be an ID/reference line
+        if any(character.isdigit() for character in line):
+            score -= 2
+
+        candidates.append((score, index, line[:80]))
+
+    if candidates:
+        candidates.sort(key=lambda candidate: (-candidate[0], candidate[1]))
+        return candidates[0][2]
 
     return "Unknown"
 
