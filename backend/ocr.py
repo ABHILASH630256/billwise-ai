@@ -1,6 +1,7 @@
 import os
 import re
 import shutil
+import time
 import cv2
 import pytesseract
 import numpy as np
@@ -69,6 +70,11 @@ def preprocess_for_ocr(image_path: str):
     speckle noise, which is both very slow for Tesseract to scan and
     unreadable. Normalizing to a bounded working resolution BEFORE any
     thresholding fixes both problems at once.
+
+    Tuned for slow/shared-CPU hosting (e.g. free-tier Render): a smaller
+    working resolution and a lighter blur cut CPU time substantially
+    with only a small accuracy trade-off, since bill text at 1100px
+    wide is still comfortably legible to Tesseract.
     """
     image = cv2.imread(image_path)
 
@@ -79,7 +85,7 @@ def preprocess_for_ocr(image_path: str):
 
     # Bound the working resolution. Upscale small images for legibility,
     # downscale large phone-camera photos (often 3000-4000px+) for speed.
-    target_width = 1600
+    target_width = 1100
     if w != target_width:
         scale = target_width / w
         interpolation = cv2.INTER_CUBIC if scale > 1 else cv2.INTER_AREA
@@ -91,9 +97,13 @@ def preprocess_for_ocr(image_path: str):
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Edge-preserving denoise. Much better than a plain Gaussian blur for
-    # real photos (removes sensor/lighting noise without smearing text).
-    gray = cv2.bilateralFilter(gray, 9, 75, 75)
+    # Light Gaussian blur instead of bilateralFilter. bilateralFilter is
+    # noticeably more CPU-hungry (it's an edge-preserving filter with a
+    # much higher per-pixel cost) and on constrained/shared CPU hosting
+    # that cost adds up to real, user-visible delay. A small Gaussian
+    # blur removes sensor noise almost as effectively for this use case
+    # at a fraction of the compute.
+    gray = cv2.GaussianBlur(gray, (3, 3), 0)
 
     thresh = cv2.adaptiveThreshold(
         gray,
@@ -124,7 +134,10 @@ def extract_text(image_path: str) -> str:
         )
 
     try:
+        t0 = time.time()
         processed = preprocess_for_ocr(image_path)
+        t1 = time.time()
+        print(f">>> preprocess_for_ocr took {t1 - t0:.2f}s")
 
         if processed is None:
             return ""
@@ -136,6 +149,9 @@ def extract_text(image_path: str) -> str:
             lang="eng",
             config="--oem 3 --psm 6"
         )
+        t2 = time.time()
+        print(f">>> tesseract image_to_string took {t2 - t1:.2f}s")
+        print(f">>> TOTAL extract_text time: {t2 - t0:.2f}s")
 
         print("\n========== OCR OUTPUT ==========")
         print(text)
