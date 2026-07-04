@@ -666,12 +666,53 @@ function initHistoryPage() {
   }
 }
 
+function initSidebarNav() {
+  const toggleBtn = document.getElementById("menuToggle");
+  const closeBtn = document.getElementById("sidebarClose");
+  const overlay = document.getElementById("sidebarOverlay");
+  const sidebar = document.getElementById("appSidebar");
+
+  if (!toggleBtn || !sidebar || !overlay) return;
+
+  function openSidebar() {
+    sidebar.classList.add("open");
+    overlay.classList.add("active");
+    toggleBtn.classList.add("is-active");
+    toggleBtn.setAttribute("aria-expanded", "true");
+    sidebar.setAttribute("aria-hidden", "false");
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+    toggleBtn.classList.remove("is-active");
+    toggleBtn.setAttribute("aria-expanded", "false");
+    sidebar.setAttribute("aria-hidden", "true");
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+  });
+
+  closeBtn?.addEventListener("click", closeSidebar);
+  overlay.addEventListener("click", closeSidebar);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeSidebar();
+  });
+
+  sidebar.querySelectorAll(".sidebar-link").forEach((link) => {
+    link.addEventListener("click", closeSidebar);
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   initHomePage();
   initUploadPage();
   initDashboardPage();
   initHistoryPage();
   initAuthAction();
+  initSidebarNav();
 });
 
 // Chart theme helper: reads CSS vars and applies themes

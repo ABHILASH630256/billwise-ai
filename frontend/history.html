@@ -10,21 +10,41 @@
 </head>
 <body class="dashboard-body">
 
+  <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="nav-brand">
-      <i class="fa-solid fa-receipt nav-logo-icon"></i>
-      <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+    <div class="navbar-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="appSidebar">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+      <div class="nav-brand">
+        <i class="fa-solid fa-receipt nav-logo-icon"></i>
+        <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+      </div>
     </div>
-    <div class="nav-links">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="upload.html" class="nav-link">Upload Bill</a>
-      <a href="dashboard.html" class="nav-link">Dashboard</a>
-      <a href="history.html" class="nav-link active">History</a>
-      <a href="#" id="authActionLink" class="nav-link">Logout</a>
-    </div>
-    <a href="upload.html" class="btn-nav-cta"><i class="fa-solid fa-plus"></i> Scan Bill</a>
-    <button class="nav-hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></button>
+    <a href="#" id="authActionLink" class="btn-signout">
+      <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+    </a>
   </nav>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="app-sidebar" id="appSidebar" aria-hidden="true">
+    <div class="sidebar-header">
+      <div class="nav-brand">
+        <i class="fa-solid fa-receipt nav-logo-icon"></i>
+        <span class="nav-logo-text">BillWise<span class="accent">AI</span></span>
+      </div>
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="upload.html" class="sidebar-link"><i class="fa-solid fa-camera"></i> Scan Bill</a>
+      <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+      <a href="history.html" class="sidebar-link active"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+    </nav>
+  </aside>
 
   <main class="main-content">
       <div class="page-header">
