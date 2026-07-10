@@ -1,24 +1,26 @@
-# 💸 BillWise AI
-
 <div align="center">
+
+# 💸 BillWise AI
 
 ### 🤖 AI-Powered Smart Expense Tracker using OCR & Machine Learning
 
-Automatically scan receipts, extract bill details using OCR, categorize expenses using Machine Learning, and visualize spending with an interactive dashboard.
+Automatically scan receipts, extract bill details using OCR, categorize expenses using Machine Learning, and visualize expenses through an interactive dashboard.
 
-<p>
+<p align="center">
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
-![Flask](https://img.shields.io/badge/Flask-3.0-black?logo=flask)
-![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?logo=docker)
-![MySQL](https://img.shields.io/badge/MySQL-Aiven-4479A1?logo=mysql)
-![Machine Learning](https://img.shields.io/badge/Machine-Learning-orange)
-![OCR](https://img.shields.io/badge/OCR-Tesseract-green)
-![Render](https://img.shields.io/badge/Deployment-Render-46E3B7)
+<img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+<img src="https://img.shields.io/badge/Flask-3.0-000000?style=for-the-badge&logo=flask"/>
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+<img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black"/>
+<img src="https://img.shields.io/badge/OCR-Tesseract-green?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-orange?style=for-the-badge&logo=scikitlearn"/>
 
 </p>
 
-🌐 **Live Demo:** https://billwise-ai-2.onrender.com
+### 🌐 Live Demo
+
+**https://billwise-ai-2.onrender.com**
 
 </div>
 
@@ -26,40 +28,40 @@ Automatically scan receipts, extract bill details using OCR, categorize expenses
 
 # 📖 Overview
 
-BillWise AI is a cloud-based intelligent expense management system that helps users digitize and organize bills effortlessly.
+BillWise AI is a smart expense management system that simplifies bill tracking using Artificial Intelligence.
 
-Instead of manually entering expense details, users simply upload an image of a receipt. The system automatically:
+Instead of manually entering expense details, users can upload a receipt image and the application automatically:
 
-- Extracts text using OCR
-- Identifies merchant name
-- Detects bill amount
-- Predicts expense category using Machine Learning
-- Converts foreign currencies (when applicable)
-- Stores expenses securely in MySQL Cloud
-- Displays analytics through an interactive dashboard
+- 📷 Scans the bill
+- 🔍 Extracts text using OCR
+- 🤖 Predicts expense category using Machine Learning
+- 💱 Converts foreign currencies
+- 💾 Stores expenses in a cloud database
+- 📊 Displays analytics through an interactive dashboard
 
 ---
 
 # ✨ Features
 
-## 📷 Smart Bill Scanning
+## 📷 OCR Bill Scanning
 
 - Upload receipt images
-- OCR-based text extraction
-- Image preprocessing for improved accuracy
-- Automatic bill information extraction
+- Automatic text extraction
+- Merchant detection
+- Bill amount detection
+- Date extraction
 
 ---
 
-## 🤖 AI Expense Categorization
+## 🤖 Machine Learning
 
-Machine Learning automatically classifies bills into categories such as
+Automatically predicts categories like
 
 - 🍔 Food
 - 🛒 Grocery
 - 🛍 Shopping
-- 🏥 Healthcare
 - 🚗 Transport
+- 🏥 Healthcare
 - 🎓 Education
 - 🎬 Entertainment
 - 💡 Utilities
@@ -70,162 +72,117 @@ Machine Learning automatically classifies bills into categories such as
 
 ## 💱 Currency Conversion
 
-Supports multiple currencies and converts expenses into the desired currency using live exchange rates.
+- Detects multiple currencies
+- Converts into preferred currency
+- Real-time exchange rate support
 
 ---
 
-## 📊 Dashboard Analytics
-
-View
+## 📊 Dashboard
 
 - Total expenses
-- Monthly spending
 - Recent bills
-- Category distribution
 - Expense history
+- Category analytics
+- Spending summary
 
 ---
 
-## 🔐 User Authentication
+## 🔐 Authentication
 
-- Signup
-- Login
-- Session Management
+- User Signup
+- User Login
 - Secure password hashing
+- Session management
 
 ---
 
-## ☁️ Cloud Database
+## ☁ Cloud Database
 
-Stores
-
-- Bills
-- Users
-- Categories
-- Expense history
-
-using Aiven Cloud MySQL.
+Stores all expenses securely using **Aiven Cloud MySQL**.
 
 ---
 
-## 🐳 Docker Deployment
+## 🐳 Docker Support
 
-Containerized application for easy deployment on Render.
-
----
-
-# 🖥 Screenshots
-
-## Home Page
-
-> *(Add Screenshot Here)*
-
-![Home](Screenshots/home.png)
+Containerized deployment using Docker and hosted on Render.
 
 ---
 
-## Upload Bill
+# 🚀 Live Demo
 
-> *(Add Screenshot Here)*
-
-![Upload](Screenshots/upload.png)
-
----
-
-## Dashboard
-
-> *(Add Screenshot Here)*
-
-![Dashboard](Screenshots/dashboard.png)
-
----
-
-## Expense History
-
-> *(Add Screenshot Here)*
-
-![History](Screenshots/history.png)
-
----
-
-# ⚙️ Technology Stack
-
-## Frontend
-
-- HTML5
-- CSS3
-- JavaScript
-
----
-
-## Backend
-
-- Python
-- Flask
-- Gunicorn
-
----
-
-## Machine Learning
-
-- Scikit-Learn
-- NumPy
-- Joblib
-
----
-
-## OCR
-
-- Tesseract OCR
-- OpenCV
-- Pillow
-- pytesseract
-
----
-
-## Database
-
-- MySQL
-- Aiven Cloud
-
----
-
-## Deployment
-
-- Docker
-- Render
+### 🔗 https://billwise-ai-2.onrender.com
 
 ---
 
 # 🏗 System Architecture
 
 ```text
-                  User
-                    │
-                    ▼
-             Upload Receipt
-                    │
-                    ▼
-          Image Preprocessing
-                    │
-                    ▼
-             OCR Extraction
-                    │
-                    ▼
-         Merchant & Amount Detection
-                    │
-                    ▼
-       Machine Learning Prediction
-                    │
-                    ▼
-        Currency Conversion (Optional)
-                    │
-                    ▼
-          Save into Cloud Database
-                    │
-                    ▼
-     Dashboard • Analytics • History
+                User
+                  │
+                  ▼
+          Upload Receipt
+                  │
+                  ▼
+        Image Preprocessing
+                  │
+                  ▼
+           OCR Extraction
+                  │
+                  ▼
+     Merchant & Amount Detection
+                  │
+                  ▼
+ Machine Learning Category Prediction
+                  │
+                  ▼
+     Currency Conversion (Optional)
+                  │
+                  ▼
+      Store in Cloud MySQL Database
+                  │
+                  ▼
+ Dashboard • History • Analytics
 ```
+
+---
+
+# 🛠 Technology Stack
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+
+### Backend
+
+- Python
+- Flask
+- Gunicorn
+
+### Machine Learning
+
+- Scikit-Learn
+- NumPy
+- Joblib
+
+### OCR
+
+- Tesseract OCR
+- OpenCV
+- Pillow
+- pytesseract
+
+### Database
+
+- MySQL
+- Aiven Cloud
+
+### Deployment
+
+- Docker
+- Render
 
 ---
 
@@ -245,8 +202,8 @@ BillWise-AI
 │
 ├── frontend
 │   ├── index.html
-│   ├── upload.html
 │   ├── dashboard.html
+│   ├── upload.html
 │   ├── history.html
 │   ├── login.html
 │   ├── signup.html
@@ -266,15 +223,41 @@ BillWise-AI
 
 ---
 
-# 🚀 Installation
+# 📸 Screenshots
 
-Clone repository
+## 🏠 Home
+
+![Home](Screenshots/home.png)
+
+---
+
+## 📤 Upload Bill
+
+![Upload](Screenshots/upload.png)
+
+---
+
+## 📊 Dashboard
+
+![Dashboard](Screenshots/dashboard.png)
+
+---
+
+## 📜 History
+
+![History](Screenshots/history.png)
+
+---
+
+# ⚙ Installation
+
+Clone the repository
 
 ```bash
 git clone https://github.com/ABHILASH630256/billwise-ai.git
 ```
 
-Go into project
+Move into the project
 
 ```bash
 cd billwise-ai
@@ -294,7 +277,7 @@ Windows
 .venv\Scripts\activate
 ```
 
-Linux/Mac
+Linux / Mac
 
 ```bash
 source .venv/bin/activate
@@ -312,7 +295,7 @@ Run
 python backend/app.py
 ```
 
-Application will start on
+Open
 
 ```
 http://localhost:5000
@@ -338,38 +321,42 @@ docker run -p 10000:10000 billwise-ai
 
 # 🌍 Deployment
 
-The application is deployed on
-
-- Render
 - Docker
+- Render
 - Aiven Cloud MySQL
 
-Live Demo
+Live URL
 
-https://billwise-ai-2.onrender.com
-
----
-
-# 📈 Future Enhancements
-
-- Mobile App
-- PDF Receipt Support
-- Email Receipt Scanner
-- AI Budget Recommendations
-- Monthly Spending Forecast
-- Voice Assistant
-- GST Analysis
-- OCR Confidence Score
-- Dark Mode
-- Export Reports to PDF & Excel
+**https://billwise-ai-2.onrender.com**
 
 ---
 
-# 🤝 Contributing
+# 📈 Future Improvements
 
-Contributions are welcome.
+- 📱 Android Application
+- 📄 PDF Receipt Support
+- 🤖 AI Budget Recommendations
+- 📧 Email Receipt Scanner
+- 🎤 Voice Assistant
+- 📊 Monthly Expense Prediction
+- 🌙 Dark Mode
+- 📥 Export Reports to Excel/PDF
+- 🔔 Smart Spending Alerts
 
-Feel free to fork the repository, create a new branch, and submit a Pull Request.
+---
+
+# 📊 Project Highlights
+
+| Feature | Status |
+|----------|--------|
+| OCR Bill Scanning | ✅ |
+| Machine Learning | ✅ |
+| Currency Conversion | ✅ |
+| User Authentication | ✅ |
+| Expense Dashboard | ✅ |
+| Docker Deployment | ✅ |
+| Cloud Database | ✅ |
+| Render Hosting | ✅ |
 
 ---
 
@@ -377,22 +364,25 @@ Feel free to fork the repository, create a new branch, and submit a Pull Request
 
 ## Abhilash Guda
 
-Integrated M.Tech Data Science
+🎓 Integrated M.Tech – Data Science
 
-VIT Vellore
+🏫 VIT Vellore
 
-### Connect with me
+### GitHub
 
-- GitHub: https://github.com/ABHILASH630256
-- LinkedIn: *(Add your LinkedIn profile here)*
+https://github.com/ABHILASH630256
+
+### LinkedIn
+
+*(Add your LinkedIn profile URL here.)*
 
 ---
 
-# ⭐ Show Your Support
+# ⭐ Support
 
-If you found this project useful,
+If you like this project,
 
-⭐ Star the repository
+⭐ Star this repository
 
 🍴 Fork it
 
@@ -400,8 +390,8 @@ If you found this project useful,
 
 ---
 
-# 📜 License
+# 📄 License
 
-This project is developed for educational, research, and portfolio purposes.
+This project is created for educational, learning, and portfolio purposes.
 
 © 2026 Abhilash Guda
