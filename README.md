@@ -374,7 +374,7 @@ https://github.com/ABHILASH630256
 
 ### LinkedIn
 
-*(Add your LinkedIn profile URL here.)*
+https://www.linkedin.com/in/abhilash-reddy-guda/?isSelfProfile=true
 
 ---
 
